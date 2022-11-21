@@ -2,7 +2,7 @@ from machine import Pin, PWM, I2C, UART, ADC
 import os, sys
 import utime
 import machine
-import random
+
 
 WiFi_SSID='My ASUS'
 WiFi_PASSWD=''
@@ -15,7 +15,7 @@ def sendCMD_waitResp(cmd,timeout=100):
     
     print("CMD: " + cmd)
     cmd+='\r\n'
-    uart.write(cmd)  #cmd.encode('utf-8')
+    uart.write(cmd)  #若有中文，需要把括弧內的cmd，改成cmd.encode('utf-8')
     return waitResp(timeout)
 
 def connet_wifi(ssid, passwd):
@@ -49,9 +49,9 @@ utime.sleep(5)
 
 
 while (1):
-	i="ON"
-    url_path='/sensor?fire='+i
+    url_path='/sensor?fire='+"ON"
 	send_http_req(Sever_IP,Sever_port,url_path)
+	utime.sleep(10)
 
 	
 	
