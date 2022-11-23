@@ -4,12 +4,12 @@ import time,math
 from machine import Pin, PWM
 from time import sleep
 
-pin_led = Pin(25, Pin.OUT)
-trig = Pin(10, Pin.OUT)
-echo = Pin(4, Pin.IN,Pin.PULL_DOWN)
-servoPin = PWM(Pin(16))
-servoPin.freq(50)
-servoSwitch=Pin(17,Pin.OUT)
+pin_led = Pin(2, Pin.OUT)
+trig = Pin(17, Pin.OUT)
+echo = Pin(16, Pin.IN,Pin.PULL_DOWN)
+servo_1 = PWM(Pin(23))
+servo_1.freq(50)
+servoSwitch=Pin(22,Pin.OUT)
 
 def ping():
     trig.value(1)   #發超聲波
@@ -28,21 +28,21 @@ def ping():
 
       
 def servo(degrees):
-    servoPin.freq(50)
+    servo_1.freq(50)
     if degrees > 180: degrees=180
     if degrees < 0: degrees=0   
     maxDuty=8000
     minDuty=1800
     newDuty=minDuty+(maxDuty-minDuty)*(degrees/180)
-    servoPin.duty_u16(int(newDuty))
+    servo_1.duty_u16(int(newDuty))
     
 while True:
     distance = round(ping())
     print("%s cm" %distance)
-    if distance>10:
+    if distance>100:
         servoSwitch.value(1)  #電流流通
         pin_led.value(1)
-        servo(0)  #順時針到12點
+        servo(180)  #順時針到12點
         time.sleep(0.1)    #過5秒再從while迴圈第一航開始
     else:
         servoSwitch.value(0)
