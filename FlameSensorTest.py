@@ -7,8 +7,7 @@ utime.sleep(2)
 while True:
    if flame_sensor.value() == 1:
        print("No Flame")
-       utime.sleep(3)
+       utime.sleep(1)
    else:
        print("Flame Detected")
-       utime.sleep(1)
-utime.sleep(0.1)
+       utime.sleep(10)
