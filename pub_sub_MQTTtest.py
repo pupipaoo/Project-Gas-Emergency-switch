@@ -59,6 +59,6 @@ while True:
  
     #time.sleep_ms(1000)
     #led.value(0)
-    client.check_msg()#透過語法讓程式主動檢查socket，也就是檢查底層有沒有訊息過來 ，因為mqtt架構無法再有訊息丟來時自主通知
+    client.check_msg()#透過語法讓程式主動檢查socket，也就是檢查底層有沒有訊息過來 ，因為在mqtt架構下，有訊息從broker丟來時，mqtt不會自主通知
 
     
