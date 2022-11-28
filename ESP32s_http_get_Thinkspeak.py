@@ -24,9 +24,12 @@ while True:
     print(sw)'''
       
     #把1這個數值丟給Thingspeak的表3資料庫
-    request= urequests.get("https://api.thingspeak.com/update?api_key=ORAIVXS2FDL752J7&field3=1")
-    request.close()  #urequests這個模組，若要丟東西給https，必須送一次，中斷一次
-    time.sleep(10)
+    request2= urequests.get("https://api.thingspeak.com/update?api_key=ORAIVXS2FDL752J7&field3=2")
+    request2.close()  #urequests這個模組，若要丟東西給https，必須送一次，中斷一次
+    time.sleep(5)
+    request1= urequests.get("https://api.thingspeak.com/update?api_key=ORAIVXS2FDL752J7&field3=1")
+    request1.close()
+    time.sleep(5)
 '''while True:  #get方案2
     time.sleep(10)
     response= urequests.get("https://api.thingspeak.com/update?api_key=ORAIVXS2FDL752J7&field3=sw")

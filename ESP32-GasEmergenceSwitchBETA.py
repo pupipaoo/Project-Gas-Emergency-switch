@@ -1,4 +1,5 @@
 #距離聲波產生器大於60公分，旋鈕回到12點鐘
+import urequests
 import network
 import time,math
 from machine import Pin, PWM
@@ -71,12 +72,17 @@ while True:
     print("%s cm" %distance)
     if distance>100:
         if flame_sensor.value() == 0:   #此時有火源
-            client.publish(topic_pub,"on")
+            client.publish(topic_pub,"on1")
+            request2= urequests.get("https://api.thingspeak.com/update?api_key=ORAIVXS2FDL752J7&field3=2")
+            request2.close()
             time.sleep(1)     #開火後經過 秒
             servoSwitch.value(1)  #電流流通
             pin_led.value(1)
             servo(180)  #順時針到高點
             pin_led.value(0)
+            request1= urequests.get("https://api.thingspeak.com/update?api_key=ORAIVXS2FDL752J7&field3=1")
+            request1.close()
+            client.publish(topic_pub,"off1")
             time.sleep(0.1)    #過 秒再從while迴圈第一航開始
     else:
         servoSwitch.value(0)
