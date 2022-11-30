@@ -1,7 +1,7 @@
 from machine import Pin
 import utime
 
-flame_sensor = Pin(10, Pin.IN)
+flame_sensor = Pin(21, Pin.IN)
 utime.sleep(2)
 
 while True:
