@@ -31,7 +31,7 @@ def reconnect():
 def check_socket(x):
     client.check_msg()
 
-def on_message(topic, msg): #MQTT發布功能不能選擇保留訊息
+def on_message(topic, msg): #MQTT發布功能不能選保留訊息
     print(topic,msg)
     if topic==topic_sub:
         on=msg.decode('utf-8')
