@@ -101,26 +101,28 @@ except OSError as e:
 
 servoSwitch.value(0)
 tim1=Timer(1) #函式裡面第一個參數是秒數，第二個是呼叫的函示
-tim1.init(period=500,mode=Timer.PERIODIC,callback=ping)
+tim1.init(period=5000,mode=Timer.PERIODIC,callback=ping) 	#每5000ms做一次
 tim2=Timer(2)
-tim2.init(period=400,mode=Timer.PERIODIC,callback=check_socket) #若要有兩個中斷腳，period數字要設不一樣
+tim2.init(period=10000,mode=Timer.PERIODIC,callback=check_socket) #若要有兩個中斷腳，period數字要設不一樣
 while True:
     if distance>100:
         if flame_sensor.value() == 0:   #此時有火源
             client.publish(topic_pub,"on")
             request2= urequests.get("https://api.thingspeak.com/update?api_key=ORAIVXS2FDL752J7&field3=2")
             request2.close()
-            time.sleep(1)     #開火後經過 秒
+            time.sleep(600)     #開火後經過 秒
             #servoSwitch.value(1)  #電流流通
-            servoSwitch.value(1)
-            servo(180)
-            #servoSwitch.on
-            pin_led.value(1)                        
-            client.publish(topic_pub,"off1")
-            request1= urequests.get("https://api.thingspeak.com/update?api_key=ORAIVXS2FDL752J7&field3=1")
-            request1.close()
-            servoSwitch.value(0)
-            pin_led.value(0)
+            if distance>100 and flame_sensor.value() == 0:
+                servoSwitch.value(1)
+                servo(180)
+                #servoSwitch.on
+                pin_led.value(1)                        
+                client.publish(topic_pub,"off1")
+                request1= urequests.get("https://api.thingspeak.com/update?api_key=ORAIVXS2FDL752J7&field3=1")
+                request1.close()
+                servoSwitch.value(0)
+                pin_led.value(0)
+                time.sleep(60)
     else:
         servoSwitch.value(0)
         pin_led.value(0)
