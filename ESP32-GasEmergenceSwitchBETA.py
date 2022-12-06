@@ -19,7 +19,7 @@ wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
 wlan.connect("My ASUS","jade1234")
 time.sleep(10)
-print('wifi OK:',wlan.isconnected())
+print('wifi:',wlan.isconnected())
 print(wlan.ifconfig())
 
 mqtt_server = 'test.mosquitto.org'
@@ -33,9 +33,6 @@ def ping(x):
     trig.value(1)   #發超聲波
     time.sleep_us(10)   #延遲ms
     trig.value(0)    #超聲波
-    count=0
-    timeout=False   #
-    start=time.ticks_us()
     while echo.value() == 0: #用來wait for HIGH
         start=time.ticks_us()    #tick代表計時，紀錄發出後的時間
     while echo.value() : #wait for HIGH
@@ -43,15 +40,13 @@ def ping(x):
     duration = stop - start
     dist = ( duration *0.034) /2
     distance = round(dist)
-    print("%s cm" %distance)
-    #return distance   
+    print("%s cm" %distance)  
 
-      
 def servo(degrees):
     servo_1.freq(50)
-    if degrees > 180: degrees=180
+    if degrees >180: degrees=180
     if degrees < 0: degrees=0   
-    maxDuty=8000
+    maxDuty=8200
     minDuty=1800
     newDuty=minDuty+(maxDuty-minDuty)*(degrees/180)
     servo_1.duty_u16(int(newDuty))
@@ -80,16 +75,17 @@ def on_message(topic, msg):   #接收訊息，記得要把MQTT平台的發布功
         print(msg)
         if on=='1':
             servoSwitch.value(1)
+            time.sleep(30)
             servo(180)
             #servoSwitch.on
+            time.sleep(30)
             pin_led.value(1)                        
             client.publish(topic_pub,"off1")
-            request1= urequests.get("https://api.thingspeak.com/update?api_key=ORAIVXS2FDL752J7&field3=1")
+            request1= urequests.get("https://api.thingspeak.com/update?api_key=ORAIVXS2FDL752J7&field3=1")		#從on後送出資料表2，需經過可能3分鐘才能再送一筆資料過去
             request1.close()
             servoSwitch.value(0)
             pin_led.value(0)
             
-
 
 try:
     client = mqtt_connect()
@@ -114,8 +110,10 @@ while True:
             #servoSwitch.value(1)  #電流流通
             if distance>100 and flame_sensor.value() == 0:
                 servoSwitch.value(1)
+                time.sleep(30)		#打開馬達電路後，需要給他時間讓店流劉通
                 servo(180)
                 #servoSwitch.on
+                time.sleep(30)
                 pin_led.value(1)                        
                 client.publish(topic_pub,"off1")
                 request1= urequests.get("https://api.thingspeak.com/update?api_key=ORAIVXS2FDL752J7&field3=1")
@@ -126,4 +124,4 @@ while True:
     else:
         servoSwitch.value(0)
         pin_led.value(0)
-        time.sleep(0.1)
+        time.sleep(60)
