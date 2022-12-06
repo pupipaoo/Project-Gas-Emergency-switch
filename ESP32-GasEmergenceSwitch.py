@@ -43,7 +43,6 @@ def ping(x):
     print("%s cm" %distance)  
 
 def servo(degrees):
-    servo_1.freq(50)
     if degrees >180: degrees=180
     if degrees < 0: degrees=0   
     maxDuty=8200
