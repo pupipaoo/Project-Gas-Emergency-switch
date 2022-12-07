@@ -8,7 +8,7 @@ from mqttlib import MQTTClient
 
 pin_led = Pin(2, Pin.OUT)
 trig = Pin(17, Pin.OUT)
-echo = Pin(16, Pin.IN,Pin.PULL_DOWN)
+echo = Pin(16, Pin.IN)
 servo_1 = PWM(Pin(23))
 servo_1.freq(50)
 servoSwitch=Pin(22,Pin.OUT)
@@ -38,7 +38,7 @@ def ping(x):
     while echo.value() : #wait for HIGH
         stop=time.ticks_us()
     duration = stop - start
-    dist = ( duration *0.034) /2
+    dist = ( duration *0.034) /2            #音速為每秒340公尺，要換算成以公分為單位的距離，且原先超聲波是以微秒為單位收發，故34000再乘以10的負6次方
     distance = round(dist)
     print("%s cm" %distance)  
 
@@ -101,7 +101,7 @@ tim2=Timer(2)
 tim2.init(period=10000,mode=Timer.PERIODIC,callback=check_socket) #若要有兩個中斷腳，period數字要設不一樣
 while True:
     if distance>100:
-        if flame_sensor.value() == 0:   #火源感測器低電位觸發，VALUE==0此時有火源
+        if flame_sensor.value() == 0:   #火源感測器為低電位觸發，VALUE==0此時有火源
             client.publish(topic_pub,"on")
             request2= urequests.get("https://api.thingspeak.com/update?api_key=ORAIVXS2FDL752J7&field3=2")
             request2.close()
