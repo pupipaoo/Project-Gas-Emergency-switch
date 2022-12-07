@@ -101,7 +101,7 @@ tim2=Timer(2)
 tim2.init(period=10000,mode=Timer.PERIODIC,callback=check_socket) #若要有兩個中斷腳，period數字要設不一樣
 while True:
     if distance>100:
-        if flame_sensor.value() == 0:   #此時有火源
+        if flame_sensor.value() == 0:   #火源感測器低電位觸發，VALUE==0此時有火源
             client.publish(topic_pub,"on")
             request2= urequests.get("https://api.thingspeak.com/update?api_key=ORAIVXS2FDL752J7&field3=2")
             request2.close()
