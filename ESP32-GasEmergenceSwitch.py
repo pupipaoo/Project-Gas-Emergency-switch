@@ -1,4 +1,3 @@
-#距離聲波產生器大於60公分，旋鈕回到12點鐘
 import urequests
 import network
 import time,math
@@ -14,19 +13,10 @@ servo_1.freq(50)
 servoSwitch=Pin(22,Pin.OUT)
 flame_sensor = Pin(21, Pin.IN)
 distance=0
-
-wlan = network.WLAN(network.STA_IF)
-wlan.active(True)
-wlan.connect("My ASUS","jade1234")
-time.sleep(10)
-print('wifi:',wlan.isconnected())
-print(wlan.ifconfig())
-
 mqtt_server = 'test.mosquitto.org'
 client_id = 'pico_mqtt_iot' #裝置上(pico)的ID，自己隨便取，假設有多個裝置下，可以用來做區別
 topic_pub = b'sensor/fire'
 topic_sub=b'sensor/switch'
-
 
 def ping(x):
     global distance #設定全域變數
@@ -38,7 +28,7 @@ def ping(x):
     while echo.value() : #wait for HIGH
         stop=time.ticks_us()
     duration = stop - start
-    dist = ( duration *0.034) /2            #音速為每秒340公尺，要換算成以公分為單位的距離，且原先超聲波是以微秒為單位收發，故34000再乘以10的負6次方
+    dist = ( duration *0.034) /2   # #音速為每秒340公尺，要換算成以公分為單位的距離，且原先超聲波是以微秒為單位收發，故34000再乘以10的負6次方
     distance = round(dist)
     print("%s cm" %distance)  
 
@@ -76,7 +66,6 @@ def on_message(topic, msg):   #接收訊息，記得要把MQTT平台的發布功
             servoSwitch.value(1)
             time.sleep(30)
             servo(180)
-            #servoSwitch.on
             time.sleep(30)
             pin_led.value(1)                        
             client.publish(topic_pub,"off1")
@@ -84,8 +73,13 @@ def on_message(topic, msg):   #接收訊息，記得要把MQTT平台的發布功
             request1.close()
             servoSwitch.value(0)
             pin_led.value(0)
-            
 
+wlan = network.WLAN(network.STA_IF)
+wlan.active(True)
+wlan.connect("My ASUS","jade1234")
+time.sleep(10)
+print('wifi:',wlan.isconnected())
+print(wlan.ifconfig())
 try:
     client = mqtt_connect()
     client.set_callback(on_message)
@@ -93,10 +87,9 @@ try:
 except OSError as e:
     reconnect()
 
-
 servoSwitch.value(0)
-tim1=Timer(1) #函式裡面第一個參數是秒數，第二個是呼叫的函示
-tim1.init(period=5000,mode=Timer.PERIODIC,callback=ping) 	#每5000ms做一次
+tim1=Timer(1) 
+tim1.init(period=5000,mode=Timer.PERIODIC,callback=ping) 	#函式裡面第一個參數是秒數，第三個是呼叫的函示 #每5000ms做一次
 tim2=Timer(2)
 tim2.init(period=10000,mode=Timer.PERIODIC,callback=check_socket) #若要有兩個中斷腳，period數字要設不一樣
 while True:
@@ -106,12 +99,10 @@ while True:
             request2= urequests.get("https://api.thingspeak.com/update?api_key=ORAIVXS2FDL752J7&field3=2")
             request2.close()
             time.sleep(600)     #開火後經過 秒
-            #servoSwitch.value(1)  #電流流通
             if distance>100 and flame_sensor.value() == 0:
                 servoSwitch.value(1)
                 time.sleep(30)		#打開馬達電路後，需要給他時間讓店流劉通
                 servo(180)
-                #servoSwitch.on
                 time.sleep(30)
                 pin_led.value(1)                        
                 client.publish(topic_pub,"off1")
