@@ -101,9 +101,9 @@ while True:
             time.sleep(600)     #開火後經過 秒
             if distance>100 and flame_sensor.value() == 0:
                 servoSwitch.value(1)
-                time.sleep(30)		#打開馬達電路後，需要給他時間讓店流劉通
+                time.sleep(30)		#單純以防萬一確保電壓有回升
                 servo(180)
-                time.sleep(30)
+                time.sleep(30)      #街上電晶體後，電壓就不穩定，若給予馬達工作的時間更短，電壓會再下降，且再給予馬達的轉服更大，電壓亦會再下降，因此容易降到低於伺服馬達工作的電壓之下，轉更慢    
                 pin_led.value(1)                        
                 client.publish(topic_pub,"off1")
                 request1= urequests.get("https://api.thingspeak.com/update?api_key=ORAIVXS2FDL752J7&field3=1")
